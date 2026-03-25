@@ -39,8 +39,8 @@
 
 <div class="mx-auto max-w-lg space-y-6">
 	<div class="space-y-2">
-		<h2 class="text-lg font-semibold">Debts & Deductions</h2>
-		<p class="text-muted-foreground text-xs">
+		<h2 class="font-display text-xl font-semibold">Debts & Deductions</h2>
+		<p class="text-muted-foreground text-sm">
 			Debts are subtracted from your total wealth before calculating Zakah.
 		</p>
 	</div>
@@ -137,7 +137,7 @@
 					</Button>
 				</div>
 				{#if debt.amount > 0}
-					<p class="text-muted-foreground pl-1 text-[10px]">
+					<p class="text-muted-foreground pl-1 text-xs">
 						{formatCurrency(debt.amount, zakahStore.currency)}/mo &times; 12 = {formatCurrency(debt.amount * 12, zakahStore.currency)}
 					</p>
 				{/if}
@@ -151,9 +151,9 @@
 	</div>
 
 	{#if totals.total > 0}
-		<div class="border-border rounded-md border p-3 text-center">
-			<p class="text-muted-foreground text-[10px] uppercase tracking-wide">Total Deductions</p>
-			<p class="text-base font-semibold">{formatCurrency(totals.total, zakahStore.currency)}</p>
+		<div class="bg-card border-border rounded-lg border p-4 text-center shadow-sm">
+			<p class="text-muted-foreground text-xs uppercase tracking-wide">Total Deductions</p>
+			<p class="text-lg font-semibold">{formatCurrency(totals.total, zakahStore.currency)}</p>
 		</div>
 	{/if}
 </div>

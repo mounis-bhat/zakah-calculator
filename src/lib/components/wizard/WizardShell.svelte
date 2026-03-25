@@ -39,7 +39,7 @@
 	</div>
 
 	<div
-		class="bg-background/95 border-border fixed bottom-0 left-0 right-0 flex items-center justify-between border-t px-4 py-3 backdrop-blur-sm"
+		class="bg-background/95 border-border fixed bottom-0 left-0 right-0 flex items-center justify-between border-t px-4 py-3.5 backdrop-blur-sm"
 	>
 		<Button
 			variant="ghost"
@@ -53,7 +53,11 @@
 		</Button>
 
 		{#if !isLastStep}
-			<Button size="sm" onclick={goNext}>
+			<Button
+				size={isSecondToLast ? "default" : "sm"}
+				onclick={goNext}
+				class={isSecondToLast ? "font-semibold shadow-sm" : ""}
+			>
 				{#if isSecondToLast}
 					<Calculator size={16} />
 					Calculate Zakah

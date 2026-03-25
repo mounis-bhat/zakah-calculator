@@ -21,7 +21,7 @@
 </script>
 
 {#if loading}
-	<div class="flex items-center gap-2 py-3 text-xs text-muted-foreground">
+	<div class="flex items-center gap-2 py-3 text-sm text-muted-foreground">
 		<ArrowsClockwise size={16} class="animate-spin" />
 		<span>Fetching live prices...</span>
 	</div>
@@ -29,7 +29,7 @@
 	<Alert.Root class="border-destructive/50 text-destructive">
 		<WarningCircle size={16} />
 		<Alert.Title>Couldn't fetch live prices</Alert.Title>
-		<Alert.Description class="text-xs">
+		<Alert.Description class="text-sm">
 			{error}. You can enter your local gold/silver price per gram manually below.
 			{#if onretry}
 				<button
@@ -42,8 +42,8 @@
 		</Alert.Description>
 	</Alert.Root>
 {:else if goldPrice !== null || silverPrice !== null}
-	<div class="flex items-center gap-2 py-3 text-xs text-muted-foreground">
-		<CheckCircle size={16} class="text-green-600" />
+	<div class="flex items-center gap-2 py-3 text-sm text-muted-foreground">
+		<CheckCircle size={16} class="text-success" />
 		<span>
 			Live prices loaded:
 			{#if goldPrice !== null}

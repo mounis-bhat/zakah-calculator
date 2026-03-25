@@ -51,16 +51,16 @@
 
 <div class="mx-auto max-w-lg space-y-6">
 	<div class="space-y-2">
-		<h2 class="text-lg font-semibold">Gold Assets</h2>
-		<p class="text-muted-foreground text-xs">
+		<h2 class="font-display text-xl font-semibold">Gold Assets</h2>
+		<p class="text-muted-foreground text-sm">
 			Add your gold items one by one. We'll help you value each piece.
 			<InfoTooltip text="Include all gold jewelry, biscuits, coins, and bars you've held for one lunar year. Zakah is based on current market liquidation value." />
 		</p>
 	</div>
 
 	{#if goldItems.length === 0}
-		<div class="border-border flex flex-col items-center gap-3 rounded-md border border-dashed p-8 text-center">
-			<p class="text-muted-foreground text-xs">No gold items added yet.</p>
+		<div class="border-gold/30 bg-gold/5 flex flex-col items-center gap-3 rounded-lg border border-dashed p-8 text-center">
+			<p class="text-muted-foreground text-sm">No gold items added yet.</p>
 			<Button size="sm" onclick={openAdd}>
 				<Plus size={16} />
 				Add Gold Item
@@ -85,9 +85,9 @@
 	{/if}
 
 	{#if totalValue > 0}
-		<div class="border-border rounded-md border p-3 text-center">
-			<p class="text-muted-foreground text-[10px] uppercase tracking-wide">Total Gold Value</p>
-			<p class="text-base font-semibold">{formatCurrency(totalValue, zakahStore.currency)}</p>
+		<div class="bg-card border-border rounded-lg border p-4 text-center shadow-sm">
+			<p class="text-muted-foreground text-xs uppercase tracking-wide">Total Gold Value</p>
+			<p class="text-lg font-semibold">{formatCurrency(totalValue, zakahStore.currency)}</p>
 		</div>
 	{/if}
 </div>

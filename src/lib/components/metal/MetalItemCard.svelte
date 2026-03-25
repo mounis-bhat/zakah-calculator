@@ -35,14 +35,14 @@
 	);
 </script>
 
-<div class="border-border flex items-center gap-3 rounded-md border p-3">
-	<div class="text-muted-foreground">
+<div class="bg-card border-border flex items-center gap-3 rounded-lg border p-3 shadow-sm">
+	<div class="text-primary/50">
 		<Icon size={20} />
 	</div>
 
 	<div class="flex-1 space-y-0.5">
 		<div class="flex items-center gap-1.5">
-			<span class="text-xs font-medium">
+			<span class="text-sm font-medium">
 				{metalItemTypeLabels[item.type]}
 			</span>
 			<Badge variant="outline" class="text-[10px]">{karatLabel}</Badge>
@@ -50,7 +50,7 @@
 				<Badge variant="secondary" class="text-[10px]">Local price</Badge>
 			{/if}
 		</div>
-		<div class="text-muted-foreground text-[10px]">
+		<div class="text-muted-foreground text-xs">
 			{item.grossWeight}g
 			{#if item.stoneDeduction > 0}
 				(−{item.stoneDeduction}g stones)
@@ -62,7 +62,7 @@
 	</div>
 
 	<div class="text-right">
-		<div class="text-xs font-medium">{formatCurrency(value, currency)}</div>
+		<div class="text-sm font-medium">{formatCurrency(value, currency)}</div>
 	</div>
 
 	<div class="flex gap-0.5">

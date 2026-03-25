@@ -58,8 +58,8 @@
 
 <div class="mx-auto max-w-lg space-y-6">
 	<div class="space-y-2">
-		<h1 class="text-lg font-semibold">Zakah Calculator</h1>
-		<p class="text-muted-foreground text-xs leading-relaxed">
+		<h1 class="font-display text-xl font-semibold">Zakah Calculator</h1>
+		<p class="text-muted-foreground text-sm leading-relaxed">
 			Calculate your obligatory Zakah on gold, silver, and cash.
 			This calculator helps you determine the current market liquidation
 			value of your assets — the cash you'd receive selling today.
@@ -135,7 +135,7 @@
 			</InfoTooltip>
 		</div>
 		<div class="flex items-center gap-3">
-			<span class={["text-xs", zakahStore.nisabMethod === "silver" && "font-medium"]}>
+			<span class={["text-sm", zakahStore.nisabMethod === "silver" && "font-medium"]}>
 				Silver (stricter)
 			</span>
 			<Switch
@@ -144,7 +144,7 @@
 					zakahStore.nisabMethod = checked ? "gold" : "silver";
 				}}
 			/>
-			<span class={["text-xs", zakahStore.nisabMethod === "gold" && "font-medium"]}>
+			<span class={["text-sm", zakahStore.nisabMethod === "gold" && "font-medium"]}>
 				Gold
 			</span>
 		</div>
