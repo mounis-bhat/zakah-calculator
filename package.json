@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@internationalized/date": "^3.12.0",
     "@playwright/test": "latest",
     "@sveltejs/adapter-static": "latest",
     "@sveltejs/kit": "^2.50.2",
@@ -23,6 +24,7 @@
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
+    "bits-ui": "^2.16.3",
     "clsx": "^2.1.1",
     "phosphor-svelte": "^3.1.0",
     "playwright": "^1.58.2",

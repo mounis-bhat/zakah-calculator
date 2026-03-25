@@ -107,7 +107,7 @@ The API price is a **rough reference point**, never the final word. The app's en
 
 - API estimates are shown in a muted style with an "approximate" label.
 - The local price input is the prominent, encouraged field.
-- Educational tooltips explain *why* the API price differs from what your jeweler would pay.
+- Educational tooltips explain _why_ the API price differs from what your jeweler would pay.
 
 ---
 
@@ -119,42 +119,46 @@ This is the core domain knowledge the app encodes and teaches users about.
 
 API spot prices are always for **pure** metal (24K gold / 999 silver). Real items are rarely pure:
 
-| Karat | Purity | Common Use |
-|-------|--------|------------|
-| 24K | 99.9% | Investment bars, biscuits, some coins |
-| 22K | 91.6% | Traditional bridal jewelry, Sovereigns, Krugerrands |
-| 21K | 87.5% | Middle Eastern jewelry standard |
-| 18K | 75.0% | Everyday jewelry, gemstone settings |
-| 17K | 70.8% | Some regional jewelry |
-| 14K | 58.3% | Western market everyday jewelry |
-| 9K | 37.5% | Budget jewelry (UK/Australia) |
+| Karat | Purity | Common Use                                          |
+| ----- | ------ | --------------------------------------------------- |
+| 24K   | 99.9%  | Investment bars, biscuits, some coins               |
+| 22K   | 91.6%  | Traditional bridal jewelry, Sovereigns, Krugerrands |
+| 21K   | 87.5%  | Middle Eastern jewelry standard                     |
+| 18K   | 75.0%  | Everyday jewelry, gemstone settings                 |
+| 17K   | 70.8%  | Some regional jewelry                               |
+| 14K   | 58.3%  | Western market everyday jewelry                     |
+| 9K    | 37.5%  | Budget jewelry (UK/Australia)                       |
 
 **Impact:** 10g of 18K gold = 7.5g of pure gold. A jeweler pays for the 7.5g, not the 10g.
 
 ### 3b. Form Factor: Jewelry vs. Bullion
 
 **Jewelry (high loss on resale):**
+
 - Buyer pays a premium for craftsmanship ("making charges"). When selling back, the jeweler treats it as scrap — making charges drop to zero.
 - Stones, enamel, and non-metal inlays must be deducted from gross weight. Zakah is only on the metal itself.
 
 **Bullion — biscuits, bars, coins (retains value):**
+
 - Traded very close to spot price. Standard investment vehicles.
 - Still subject to dealer bid/ask spreads, but much smaller loss vs. jewelry.
 
 ### 3c. Economies of Scale (Weight Premiums)
 
 Manufacturing costs are roughly fixed per unit. So:
+
 - A 1g biscuit might carry a ~10% premium over spot.
 - A 10g biscuit might carry ~3%.
 - A 100g bar might carry ~1%.
 
-When *selling*, dealers factor this in — ten 1g biscuits fetch a different total than one 10g biscuit. This is why per-unit local pricing matters.
+When _selling_, dealers factor this in — ten 1g biscuits fetch a different total than one 10g biscuit. This is why per-unit local pricing matters.
 
 ### 3d. Zakah Valuation Principle
 
 Islamic jurisprudence: Zakah on gold/silver is based on **current market liquidation value** — the cash you'd receive walking into a local shop and selling today. Not the purchase price, not the spot price, not the sentimental value.
 
 The app solves this by:
+
 1. Asking for karat (adjusts for purity).
 2. Separating net weight from stones (deducts non-metal).
 3. Showing an API rough estimate (starting point).
