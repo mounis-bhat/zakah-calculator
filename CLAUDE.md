@@ -86,3 +86,7 @@ For GitHub Actions, consider using [`voidzero-dev/setup-vp`](https://github.com/
 - [ ] Run `vp install` after pulling remote changes and before getting started.
 - [ ] Run `vp check` and `vp test` to validate changes.
 <!--VITE PLUS END-->
+
+# UI Components
+
+This project uses [shadcn-svelte](https://shadcn-svelte.com/) for UI components. Components are located in `src/lib/components/ui/`. To add new shadcn-svelte components, use `vp dlx shadcn-svelte@latest add <component>`.
