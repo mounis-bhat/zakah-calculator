@@ -52,7 +52,7 @@
 	<Label for={id}>{label}</Label>
 	<div class="relative">
 		<span
-			class="text-muted-foreground pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs"
+			class="text-muted-foreground pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm"
 		>
 			{getCurrencySymbol(currency)}
 		</span>

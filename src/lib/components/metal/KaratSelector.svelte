@@ -44,7 +44,7 @@
 			<button
 				type="button"
 				class={cn(
-					"rounded-md border px-3 py-1.5 text-xs font-medium transition-all",
+					"rounded-md border px-3 py-1.5 text-sm font-medium transition-all",
 					value === option.value && !showCustom
 						? "border-primary bg-primary text-primary-foreground"
 						: "border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground"
@@ -57,7 +57,7 @@
 		<button
 			type="button"
 			class={cn(
-				"rounded-md border px-3 py-1.5 text-xs font-medium transition-all",
+				"rounded-md border px-3 py-1.5 text-sm font-medium transition-all",
 				showCustom
 					? "border-primary bg-primary text-primary-foreground"
 					: "border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground"

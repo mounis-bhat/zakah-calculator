@@ -20,7 +20,7 @@
 		>
 			<Info size={16} />
 		</Tooltip.Trigger>
-		<Tooltip.Content side="top" class="max-w-xs text-xs">
+		<Tooltip.Content side="top" class="max-w-xs text-sm">
 			{#if children}
 				{@render children()}
 			{:else}

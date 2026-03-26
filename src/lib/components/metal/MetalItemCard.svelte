@@ -42,7 +42,7 @@
 
 	<div class="flex-1 space-y-0.5">
 		<div class="flex items-center gap-1.5">
-			<span class="text-sm font-medium">
+			<span class="text-base font-medium">
 				{metalItemTypeLabels[item.type]}
 			</span>
 			<Badge variant="outline" class="text-[10px]">{karatLabel}</Badge>
@@ -50,10 +50,10 @@
 				<Badge variant="secondary" class="text-[10px]">Local price</Badge>
 			{/if}
 		</div>
-		<div class="text-muted-foreground text-xs">
+		<div class="text-muted-foreground text-sm">
 			{item.grossWeight}g
 			{#if item.stoneDeduction > 0}
-				(−{item.stoneDeduction}g stones)
+				(-{item.stoneDeduction}g stones)
 			{/if}
 			{#if item.quantity > 1}
 				&times; {item.quantity}
@@ -62,7 +62,7 @@
 	</div>
 
 	<div class="text-right">
-		<div class="text-sm font-medium">{formatCurrency(value, currency)}</div>
+		<div class="text-base font-medium">{formatCurrency(value, currency)}</div>
 	</div>
 
 	<div class="flex gap-0.5">

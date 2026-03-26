@@ -3,6 +3,7 @@
 	import { zakahStore } from "@/state/zakah-state.svelte";
 	import { computeTotalMetalValue } from "@/calculations/zakah";
 	import { formatCurrency } from "$lib/utils.js";
+	import { fade } from "svelte/transition";
 	import { Button } from "$lib/components/ui/button";
 	import * as Sheet from "$lib/components/ui/sheet";
 	import MetalItemForm from "@/components/metal/MetalItemForm.svelte";
@@ -49,45 +50,69 @@
 	}
 </script>
 
-<div class="mx-auto max-w-lg space-y-6">
+<div class="mx-auto max-w-4xl space-y-6 lg:space-y-8">
 	<div class="space-y-2">
-		<h2 class="font-display text-xl font-semibold">Gold Assets</h2>
-		<p class="text-muted-foreground text-sm">
+		<h1 class="font-display text-xl font-semibold lg:text-2xl">
+			Gold Assets
+		</h1>
+		<p class="text-muted-foreground text-base">
 			Add your gold items one by one. We'll help you value each piece.
-			<InfoTooltip text="Include all gold jewelry, biscuits, coins, and bars you've held for one lunar year. Zakah is based on current market liquidation value." />
+			<InfoTooltip
+				text="Include all gold jewelry, biscuits, coins, and bars you've held for one lunar year. Zakah is based on current market liquidation value."
+			/>
 		</p>
 	</div>
 
 	{#if goldItems.length === 0}
-		<div class="border-gold/30 bg-gold/5 flex flex-col items-center gap-3 rounded-lg border border-dashed p-8 text-center">
-			<p class="text-muted-foreground text-sm">No gold items added yet.</p>
+		<div
+			class="border-gold/30 bg-gold/5 flex flex-col items-center gap-3 rounded-lg border border-dashed p-8 text-center lg:p-12"
+		>
+			<p class="text-muted-foreground text-base">
+				No gold items added yet.
+			</p>
 			<Button size="sm" onclick={openAdd}>
 				<Plus size={16} />
 				Add Gold Item
 			</Button>
 		</div>
 	{:else}
-		<div class="space-y-2">
+		<div
+			class="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0"
+		>
 			{#each goldItems as item (item.id)}
-				<MetalItemCard
-					{item}
-					effectiveSpotPrice={zakahStore.effectiveGoldPrice}
-					currency={zakahStore.currency}
-					onedit={() => openEdit(item)}
-					ondelete={() => handleDelete(item.id)}
-				/>
+				<div transition:fade={{ duration: 150 }}>
+					<MetalItemCard
+						{item}
+						effectiveSpotPrice={zakahStore.effectiveGoldPrice}
+						currency={zakahStore.currency}
+						onedit={() => openEdit(item)}
+						ondelete={() => handleDelete(item.id)}
+					/>
+				</div>
 			{/each}
 		</div>
-		<Button variant="outline" size="sm" onclick={openAdd} class="w-full">
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={openAdd}
+			class="w-full lg:w-auto"
+		>
 			<Plus size={16} />
 			Add Another Item
 		</Button>
 	{/if}
 
 	{#if totalValue > 0}
-		<div class="bg-card border-border rounded-lg border p-4 text-center shadow-sm">
-			<p class="text-muted-foreground text-xs uppercase tracking-wide">Total Gold Value</p>
-			<p class="text-lg font-semibold">{formatCurrency(totalValue, zakahStore.currency)}</p>
+		<div
+			class="bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			transition:fade={{ duration: 200 }}
+		>
+			<p class="text-muted-foreground text-sm uppercase tracking-wide">
+				Total Gold Value
+			</p>
+			<p class="text-lg font-semibold">
+				{formatCurrency(totalValue, zakahStore.currency)}
+			</p>
 		</div>
 	{/if}
 </div>
@@ -100,7 +125,7 @@
 				Enter the details of your gold item.
 			</Sheet.Description>
 		</Sheet.Header>
-		<div class="px-1 py-4">
+		<div class="px-5 py-6">
 			<MetalItemForm
 				metal="gold"
 				currency={zakahStore.currency}

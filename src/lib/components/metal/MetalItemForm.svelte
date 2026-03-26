@@ -170,11 +170,11 @@
 		<Label>Valuation</Label>
 
 		{#if estimatedPrice !== null}
-			<div class="text-muted-foreground space-y-0.5 text-xs">
+			<div class="text-muted-foreground space-y-0.5 text-sm">
 				<span class="italic">
 					Estimated: ~{formatCurrency(estimatedPrice, currency)} based on spot price
 				</span>
-				<p class="text-[10px]">
+				<p class="text-sm">
 					Pure {metal}: {pureWeight.toFixed(2)}g &times; {formatCurrency(effectiveSpotPrice ?? 0, currency)}/g
 				</p>
 			</div>
@@ -185,7 +185,7 @@
 			{currency}
 			label="Local selling price per unit"
 		/>
-		<p class="text-muted-foreground text-[10px]">
+		<p class="text-muted-foreground text-sm">
 			{#if type === "jewelry"}
 				Jewelers typically pay scrap value — lower than what you paid. Making charges are not recoverable.
 			{:else}
@@ -196,7 +196,7 @@
 		{#if localPricePerUnit > 0}
 			<div class="flex items-center gap-2">
 				<Switch bind:checked={useLocalPrice} id="use-local" />
-				<Label for="use-local" class="text-xs">Use my local price</Label>
+				<Label for="use-local" class="text-sm">Use my local price</Label>
 			</div>
 		{/if}
 	</div>

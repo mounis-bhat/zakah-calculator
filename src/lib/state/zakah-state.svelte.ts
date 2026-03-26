@@ -19,8 +19,6 @@ function createDefaultState(): ZakahState {
 }
 
 class ZakahStore {
-  // Wizard state
-  currentStep = $state(0);
   hasSavedState = $state(false);
 
   // Setup
@@ -94,7 +92,6 @@ class ZakahStore {
     try {
       const data = {
         state: this.toState(),
-        currentStep: this.currentStep,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch {
@@ -120,7 +117,6 @@ class ZakahStore {
       this.metalItems = s.metalItems ?? [];
       this.debts = s.debts ?? [];
       this.nisabMethod = s.nisabMethod ?? "silver";
-      this.currentStep = data.currentStep ?? 0;
       this.hasSavedState = true;
       return true;
     } catch {
@@ -140,7 +136,6 @@ class ZakahStore {
     this.metalItems = [];
     this.debts = [];
     this.nisabMethod = defaults.nisabMethod;
-    this.currentStep = 0;
     this.hasSavedState = false;
     try {
       localStorage.removeItem(STORAGE_KEY);
