@@ -6,18 +6,19 @@
 	import { onMount } from "svelte";
 	import { zakahStore } from "@/state/zakah-state.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import * as Sheet from "$lib/components/ui/sheet";
 	import { cn } from "$lib/utils.js";
 	import { ArrowLeft, ArrowRight, Calculator } from "phosphor-svelte";
 
 	let { children } = $props();
 
 	const routes = [
-		{ path: "/", label: "Setup" },
-		{ path: "/cash", label: "Cash" },
-		{ path: "/gold", label: "Gold" },
-		{ path: "/silver", label: "Silver" },
-		{ path: "/debts", label: "Debts" },
-		{ path: "/results", label: "Results" },
+		{ path: "/", label: "Setup", description: "Preferences and live prices" },
+		{ path: "/cash", label: "Cash", description: "Wallets and bank balances" },
+		{ path: "/gold", label: "Gold", description: "Jewelry and bullion items" },
+		{ path: "/silver", label: "Silver", description: "Silver holdings by weight" },
+		{ path: "/debts", label: "Debts", description: "Short-term liabilities" },
+		{ path: "/results", label: "Results", description: "Final nisab and zakah due" },
 	];
 
 	const currentIndex = $derived(
@@ -32,8 +33,14 @@
 			: null,
 	);
 	const isSecondToLast = $derived(currentIndex === routes.length - 2);
+	const currentRoute = $derived(routes[currentIndex] ?? routes[0]);
+	const stepNumber = $derived(currentIndex >= 0 ? currentIndex + 1 : 1);
+	const progressValue = $derived(
+		currentIndex >= 0 ? (stepNumber / routes.length) * 100 : 0,
+	);
 
 	let mounted = $state(false);
+	let menuOpen = $state(false);
 
 	onMount(() => {
 		zakahStore.loadFromStorage();
@@ -78,33 +85,182 @@
 		class="border-border/50 sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md"
 	>
 		<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-12 xl:px-16">
-			<div class="flex items-center py-3 lg:py-4">
+			<div class="flex items-center justify-between gap-4 py-3 lg:py-5">
 				<a
 					href="/"
-					class="font-display text-lg font-semibold tracking-tight lg:text-xl"
+					class="font-display text-lg font-semibold tracking-tight lg:text-2xl"
 				>
 					Zakah Calculator
 				</a>
+
+				<div class="flex items-center gap-3 lg:hidden">
+					<div class="min-w-0 text-right">
+						<p class="truncate text-sm font-semibold">{currentRoute.label}</p>
+						<p class="text-muted-foreground text-xs">
+							Step {stepNumber} of {routes.length}
+						</p>
+					</div>
+					<Button
+						variant="outline"
+						size="sm"
+						class="rounded-full border-border/60 bg-background/70 px-3 text-sm"
+						onclick={() => (menuOpen = true)}
+					>
+						All steps
+					</Button>
+				</div>
+
+				<div class="hidden items-center gap-4 lg:flex">
+					<div class="text-right">
+						<p class="text-muted-foreground text-xs uppercase tracking-[0.22em]">
+							Guided workflow
+						</p>
+						<p class="text-sm font-medium">
+							Step {stepNumber} of {routes.length}
+						</p>
+					</div>
+					<div class="nav-progress-track w-24">
+						<div
+							class="nav-progress-fill"
+							style={`width: ${progressValue}%`}
+						></div>
+					</div>
+				</div>
 			</div>
-			<div class="no-scrollbar -mb-px flex gap-1 overflow-x-auto pb-3">
+
+			<div class="hidden gap-3 pb-4 lg:grid lg:grid-cols-6">
 				{#each routes as route, i}
 					{@const isActive = route.path === $page.url.pathname}
+					{@const isComplete = i < currentIndex}
 					<a
 						href={route.path}
 						style="--stagger-index: {i}"
 						class={cn(
-							"animate-stagger-in whitespace-nowrap rounded-full px-4 py-2 text-base font-medium transition-colors",
+							"animate-stagger-in group block rounded-[1.4rem] border px-4 py-4 transition-all duration-200",
 							isActive
-								? "bg-primary/15 text-primary"
-								: "text-muted-foreground hover:bg-muted hover:text-foreground",
+								? "border-primary/40 bg-primary/12 shadow-lg shadow-primary/10"
+								: isComplete
+									? "border-border/70 bg-card/80 hover:border-primary/30 hover:bg-card"
+									: "border-border/50 bg-background/55 hover:border-border hover:bg-card/70",
 						)}
 					>
-						{route.label}
+						<div class="flex items-start gap-3">
+							<div
+								class={cn(
+									"flex size-9 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition-colors",
+									isActive
+										? "border-primary/50 bg-primary text-primary-foreground"
+										: isComplete
+											? "border-primary/30 bg-primary/12 text-primary"
+											: "border-border/60 bg-muted/50 text-muted-foreground group-hover:text-foreground",
+								)}
+							>
+								{i + 1}
+							</div>
+							<div class="min-w-0 space-y-1">
+								<p
+									class={cn(
+										"truncate text-sm font-semibold",
+										isActive ? "text-foreground" : "text-foreground/90",
+									)}
+								>
+									{route.label}
+								</p>
+								<p class="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
+									{route.description}
+								</p>
+							</div>
+						</div>
 					</a>
 				{/each}
 			</div>
 		</div>
 	</nav>
+
+	<Sheet.Root bind:open={menuOpen}>
+		<Sheet.Content
+			side="right"
+			class="w-[88vw] max-w-sm border-l border-border/60 bg-background/95 p-0 backdrop-blur-xl"
+		>
+			<div class="flex h-full flex-col">
+				<div class="border-border/60 border-b px-5 pb-4 pt-5">
+					<p class="text-muted-foreground text-xs uppercase tracking-[0.24em]">
+						Calculator steps
+					</p>
+					<div class="mt-2 flex items-end justify-between gap-3">
+						<div>
+							<h2 class="font-display text-xl font-semibold">{currentRoute.label}</h2>
+							<p class="text-muted-foreground mt-1 text-sm">
+								{currentRoute.description}
+							</p>
+						</div>
+						<div class="text-right text-sm font-medium">
+							{stepNumber}/{routes.length}
+						</div>
+					</div>
+					<div class="nav-progress-track mt-4">
+						<div
+							class="nav-progress-fill"
+							style={`width: ${progressValue}%`}
+						></div>
+					</div>
+				</div>
+
+				<div class="flex-1 overflow-y-auto p-3">
+					<div class="space-y-2">
+						{#each routes as route, i}
+							{@const isActive = route.path === $page.url.pathname}
+							{@const isComplete = i < currentIndex}
+							<a
+								href={route.path}
+								onclick={() => (menuOpen = false)}
+								class={cn(
+									"block rounded-2xl border px-4 py-3 transition-colors",
+									isActive
+										? "border-primary/40 bg-primary/10"
+										: isComplete
+											? "border-border/60 bg-card/80"
+											: "border-border/50 bg-background/40",
+								)}
+							>
+								<div class="flex items-start gap-3">
+									<div
+										class={cn(
+											"flex size-9 shrink-0 items-center justify-center rounded-full border text-sm font-semibold",
+											isActive
+												? "border-primary/50 bg-primary text-primary-foreground"
+												: isComplete
+													? "border-primary/30 bg-primary/12 text-primary"
+													: "border-border/60 bg-muted/50 text-muted-foreground",
+										)}
+									>
+										{i + 1}
+									</div>
+									<div class="min-w-0 flex-1">
+										<div class="flex items-center justify-between gap-3">
+											<p class="truncate text-sm font-semibold">{route.label}</p>
+											<span class="text-muted-foreground text-xs">
+												{#if isActive}
+													Current
+												{:else if isComplete}
+													Done
+												{:else}
+													Next
+												{/if}
+											</span>
+										</div>
+										<p class="text-muted-foreground mt-1 text-sm leading-relaxed">
+											{route.description}
+										</p>
+									</div>
+								</div>
+							</a>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</Sheet.Content>
+	</Sheet.Root>
 
 	<!-- Content -->
 	<main class="flex-1 pb-20 lg:pb-0">
@@ -121,26 +277,37 @@
 			class="border-border/50 bg-background/90 fixed bottom-0 left-0 right-0 border-t backdrop-blur-md print:hidden lg:static lg:border-0 lg:bg-transparent lg:backdrop-blur-none"
 		>
 			<div
-				class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 lg:px-12 lg:pb-10 xl:px-16"
+				class="mx-auto grid max-w-5xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3 sm:px-6 lg:px-12 lg:pb-10 xl:px-16"
 			>
 				{#if prevRoute}
 					<Button
 						variant="ghost"
 						size="sm"
 						onclick={() => goto(prevRoute.path)}
+						class="justify-self-start"
 					>
 						<ArrowLeft size={16} />
 						{prevRoute.label}
 					</Button>
 				{:else}
-					<div></div>
+					<div class="h-7"></div>
 				{/if}
+
+				<div class="min-w-0 text-center">
+					<p class="text-muted-foreground text-[11px] uppercase tracking-[0.24em]">
+						Current step
+					</p>
+					<p class="truncate text-sm font-semibold">{currentRoute.label}</p>
+				</div>
 
 				{#if nextRoute}
 					<Button
 						size={isSecondToLast ? "default" : "sm"}
 						onclick={() => goto(nextRoute.path)}
-						class={isSecondToLast ? "font-semibold shadow-sm" : ""}
+						class={cn(
+							"justify-self-end",
+							isSecondToLast && "font-semibold shadow-sm",
+						)}
 					>
 						{#if isSecondToLast}
 							<Calculator size={16} />

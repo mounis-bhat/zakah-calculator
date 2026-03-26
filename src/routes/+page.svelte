@@ -14,12 +14,14 @@
 	import { fetchExchangeRates } from "@/api/currency";
 	import * as Select from "$lib/components/ui/select";
 	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Alert from "$lib/components/ui/alert";
 	import { Switch } from "$lib/components/ui/switch";
 	import { Label } from "$lib/components/ui/label";
 	import { Button } from "$lib/components/ui/button";
 	import CurrencyInput from "@/components/shared/CurrencyInput.svelte";
 	import InfoTooltip from "@/components/shared/InfoTooltip.svelte";
 	import PriceStatus from "@/components/shared/PriceStatus.svelte";
+	import { Info } from "phosphor-svelte";
 
 	let loading = $state(false);
 	let error = $state<string | null>(null);
@@ -110,11 +112,35 @@
 			calculator helps you determine the current market liquidation value
 			of your assets.
 		</p>
+		<p class="text-muted-foreground/75 max-w-3xl text-sm leading-relaxed">
+			Live metal prices are fetched as USD spot prices from US market data, then
+			converted into your selected currency. That converted value is only a
+			reference and may not match the actual local rate in your country.
+		</p>
 	</div>
+
+	<Alert.Root
+		class="animate-stagger-in border-primary/20 bg-primary/6 rounded-2xl"
+		style="--stagger-index: 1"
+	>
+		<Info size={18} class="text-primary" />
+		<Alert.Title>About the live metal prices</Alert.Title>
+		<Alert.Description class="space-y-2 text-sm leading-relaxed">
+			<p>
+				Gold and silver prices are fetched as USD spot prices from US market
+				data, then converted using your selected currency.
+			</p>
+			<p>
+				Your actual local rate may still differ because of taxes, import costs,
+				dealer spreads, and regional market premiums. If you know your local
+				rate, use the manual override below for better accuracy.
+			</p>
+		</Alert.Description>
+	</Alert.Root>
 
 	<div
 		class="animate-stagger-in space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
-		style="--stagger-index: 1"
+		style="--stagger-index: 2"
 	>
 		<!-- Currency -->
 		<div class="space-y-1.5">
@@ -185,7 +211,7 @@
 	</div>
 
 	<!-- Price status -->
-	<div class="animate-stagger-in" style="--stagger-index: 2">
+	<div class="animate-stagger-in" style="--stagger-index: 3">
 		<PriceStatus
 			{loading}
 			{error}
@@ -197,7 +223,7 @@
 	</div>
 
 	<!-- Manual overrides -->
-	<div class="animate-stagger-in space-y-3" style="--stagger-index: 3">
+	<div class="animate-stagger-in space-y-3" style="--stagger-index: 4">
 		<div class="flex items-center gap-1.5">
 			<Label>Manual price override</Label>
 			<InfoTooltip

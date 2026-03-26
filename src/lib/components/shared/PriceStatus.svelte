@@ -58,10 +58,11 @@
 				{/if}
 			</span>
 		</div>
-		{#if currency !== "USD"}
-			<p class="text-muted-foreground/70 pl-6 text-sm">
-				Spot prices are sourced from US markets. Local rates in your country may differ due to import duties, taxes, and regional premiums. Enter your local rate below for better accuracy.
-			</p>
-		{/if}
+		<p class="text-muted-foreground/70 pl-6 text-sm leading-relaxed">
+			Live spot prices are fetched in USD from US market data and then converted
+			into {currency}. Your actual buy or sell rate in your country may still
+			differ because local dealer premiums, taxes, import costs, and market
+			conditions vary. Enter your local rate below for better accuracy.
+		</p>
 	</div>
 {/if}
