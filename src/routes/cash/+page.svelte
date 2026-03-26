@@ -10,7 +10,7 @@
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6 lg:space-y-8">
-	<div class="space-y-2">
+	<div class="animate-stagger-in space-y-2" style="--stagger-index: 0">
 		<h1 class="font-display text-xl font-semibold lg:text-2xl">
 			Cash Assets
 		</h1>
@@ -25,7 +25,7 @@
 	<div
 		class="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0"
 	>
-		<div class="flex items-start gap-3">
+		<div class="animate-stagger-in flex items-start gap-3" style="--stagger-index: 1">
 			<Wallet size={20} class="text-primary/50 mt-6 shrink-0" />
 			<CurrencyInput
 				bind:value={zakahStore.cash.onHand}
@@ -36,7 +36,7 @@
 			/>
 		</div>
 
-		<div class="flex items-start gap-3">
+		<div class="animate-stagger-in flex items-start gap-3" style="--stagger-index: 2">
 			<Bank size={20} class="text-primary/50 mt-6 shrink-0" />
 			<CurrencyInput
 				bind:value={zakahStore.cash.inBank}
@@ -50,7 +50,8 @@
 
 	{#if total > 0}
 		<div
-			class="bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			class="animate-stagger-in bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			style="--stagger-index: 3"
 			transition:fade={{ duration: 200 }}
 		>
 			<p class="text-muted-foreground text-sm uppercase tracking-wide">

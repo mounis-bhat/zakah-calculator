@@ -27,6 +27,10 @@
 	let manualSilver = $state(zakahStore.manualSilverPrice ?? 0);
 	let showWelcomeBack = $state(false);
 
+	const selectedCurrency = $derived(
+		currencies.find((c) => c.code === zakahStore.currency),
+	);
+
 	$effect(() => {
 		zakahStore.manualGoldPrice = manualGold || null;
 	});
@@ -99,7 +103,7 @@
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6 lg:space-y-8">
-	<div class="space-y-2">
+	<div class="animate-stagger-in space-y-2" style="--stagger-index: 0">
 		<h1 class="font-display text-xl font-semibold lg:text-2xl">Setup</h1>
 		<p class="text-muted-foreground text-base leading-relaxed">
 			Calculate your obligatory Zakah on gold, silver, and cash. This
@@ -109,7 +113,8 @@
 	</div>
 
 	<div
-		class="space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
+		class="animate-stagger-in space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
+		style="--stagger-index: 1"
 	>
 		<!-- Currency -->
 		<div class="space-y-1.5">
@@ -120,13 +125,15 @@
 				onValueChange={handleCurrencyChange}
 			>
 				<Select.Trigger class="w-full">
-					{currencies.find((c) => c.code === zakahStore.currency)
-						?.name ?? zakahStore.currency}
+					{#if selectedCurrency}
+						<span class="text-base">{selectedCurrency.flag}</span>
+					{/if}
+					{selectedCurrency?.name ?? zakahStore.currency}
 				</Select.Trigger>
 				<Select.Content>
 					{#each currencies as c (c.code)}
 						<Select.Item value={c.code}>
-							{c.symbol} {c.name} ({c.code})
+							<span class="text-base">{c.flag}</span> {c.name} ({c.code})
 						</Select.Item>
 					{/each}
 				</Select.Content>
@@ -178,17 +185,19 @@
 	</div>
 
 	<!-- Price status -->
-	<PriceStatus
-		{loading}
-		{error}
-		goldPrice={zakahStore.spotPriceGold24KPerGram}
-		silverPrice={zakahStore.spotPriceSilverPerGram}
-		currency={zakahStore.currency}
-		onretry={fetchPrices}
-	/>
+	<div class="animate-stagger-in" style="--stagger-index: 2">
+		<PriceStatus
+			{loading}
+			{error}
+			goldPrice={zakahStore.spotPriceGold24KPerGram}
+			silverPrice={zakahStore.spotPriceSilverPerGram}
+			currency={zakahStore.currency}
+			onretry={fetchPrices}
+		/>
+	</div>
 
 	<!-- Manual overrides -->
-	<div class="space-y-3">
+	<div class="animate-stagger-in space-y-3" style="--stagger-index: 3">
 		<div class="flex items-center gap-1.5">
 			<Label>Manual price override</Label>
 			<InfoTooltip

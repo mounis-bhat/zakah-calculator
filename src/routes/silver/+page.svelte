@@ -51,7 +51,7 @@
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6 lg:space-y-8">
-	<div class="space-y-2">
+	<div class="animate-stagger-in space-y-2" style="--stagger-index: 0">
 		<h1 class="font-display text-xl font-semibold lg:text-2xl">
 			Silver Assets
 		</h1>
@@ -65,7 +65,8 @@
 
 	{#if silverItems.length === 0}
 		<div
-			class="border-muted-foreground/20 bg-muted/50 flex flex-col items-center gap-3 rounded-lg border border-dashed p-8 text-center lg:p-12"
+			class="animate-stagger-in border-muted-foreground/20 bg-muted/50 flex flex-col items-center gap-3 rounded-lg border border-dashed p-8 text-center lg:p-12"
+			style="--stagger-index: 1"
 		>
 			<p class="text-muted-foreground text-base">
 				No silver items added yet.
@@ -79,8 +80,12 @@
 		<div
 			class="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0"
 		>
-			{#each silverItems as item (item.id)}
-				<div transition:fade={{ duration: 150 }}>
+			{#each silverItems as item, i (item.id)}
+				<div
+					class="animate-stagger-in"
+					style="--stagger-index: {i + 1}"
+					transition:fade={{ duration: 150 }}
+				>
 					<MetalItemCard
 						{item}
 						effectiveSpotPrice={zakahStore.effectiveSilverPrice}
@@ -104,7 +109,8 @@
 
 	{#if totalValue > 0}
 		<div
-			class="bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			class="animate-stagger-in bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			style="--stagger-index: {silverItems.length + 1}"
 			transition:fade={{ duration: 200 }}
 		>
 			<p class="text-muted-foreground text-sm uppercase tracking-wide">

@@ -45,12 +45,12 @@
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6 lg:space-y-8 print:max-w-none">
-	<h1 class="font-display text-2xl font-bold lg:text-3xl">Results</h1>
+	<h1 class="animate-stagger-in font-display text-2xl font-bold lg:text-3xl" style="--stagger-index: 0">Results</h1>
 
 	<!-- Nisab Status -->
 	{#if s.nisabThreshold !== null}
 		{#if s.isAboveNisab}
-			<Alert.Root class="border-success/30 bg-success/5">
+			<Alert.Root class="animate-stagger-in border-success/30 bg-success/5" style="--stagger-index: 1">
 				<CheckCircle size={16} class="text-success" />
 				<Alert.Title class="text-success"
 					>Zakah is obligatory</Alert.Title
@@ -61,7 +61,7 @@
 				</Alert.Description>
 			</Alert.Root>
 		{:else}
-			<Alert.Root>
+			<Alert.Root class="animate-stagger-in" style="--stagger-index: 1">
 				<XCircle size={16} class="text-muted-foreground" />
 				<Alert.Title>Below nisab threshold</Alert.Title>
 				<Alert.Description class="text-sm">
@@ -73,7 +73,7 @@
 			</Alert.Root>
 		{/if}
 	{:else}
-		<Alert.Root class="border-destructive/50">
+		<Alert.Root class="animate-stagger-in border-destructive/50" style="--stagger-index: 1">
 			<Alert.Title>Cannot determine nisab</Alert.Title>
 			<Alert.Description class="text-base">
 				No metal prices available. Go to <a
@@ -87,7 +87,7 @@
 	<!-- Zakah Due -->
 	{#if s.isAboveNisab}
 		<div
-			class="border-primary/20 rounded-xl border bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 p-8 text-center shadow-lg lg:p-12"
+			class="border-primary/20 rounded-xl border bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 p-8 text-center shadow-lg shadow-primary/10 lg:p-12"
 			in:fly={{ y: 20, duration: 400, delay: 200 }}
 		>
 			<p
@@ -100,12 +100,12 @@
 			>
 				{fmt(s.zakahDue)}
 			</p>
-			<div class="bg-gold/60 mx-auto mt-3 h-0.5 w-16 rounded-full"></div>
+			<div class="animate-shimmer mx-auto mt-3 h-0.5 w-16 rounded-full bg-gradient-to-r from-transparent via-gold to-transparent bg-[length:200%_100%]"></div>
 		</div>
 	{/if}
 
 	<!-- Asset Summary Table -->
-	<div class="space-y-2">
+	<div class="animate-stagger-in space-y-2" style="--stagger-index: 3">
 		<div class="flex items-center justify-between">
 			<h3 class="text-base font-medium lg:text-lg">Asset Summary</h3>
 			<Button
@@ -198,7 +198,7 @@
 
 	<!-- Per-item breakdown -->
 	{#if zakahStore.metalItems.length > 0}
-		<Collapsible.Root bind:open={detailsOpen}>
+		<Collapsible.Root bind:open={detailsOpen} class="animate-stagger-in" style="--stagger-index: 4">
 			<Collapsible.Trigger
 				class="flex w-full items-center gap-1.5 text-base font-medium"
 			>
@@ -240,7 +240,7 @@
 	<Separator />
 
 	<!-- Actions -->
-	<div class="flex gap-2 print:hidden">
+	<div class="animate-stagger-in flex gap-2 print:hidden" style="--stagger-index: 5">
 		<Button variant="outline" size="sm" onclick={handlePrint}>
 			<Printer size={14} />
 			Print

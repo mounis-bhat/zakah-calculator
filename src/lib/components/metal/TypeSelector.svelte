@@ -23,12 +23,13 @@
 </script>
 
 <div class="grid grid-cols-4 gap-2">
-	{#each types as itemType}
+	{#each types as itemType, i}
 		{@const Icon = icons[itemType]}
 		<button
 			type="button"
+			style="--stagger-index: {i}"
 			class={cn(
-				"border-border flex flex-col items-center gap-1.5 rounded-md border p-3 text-sm transition-all",
+				"animate-scale-in border-border flex flex-col items-center gap-1.5 rounded-md border p-3 text-sm transition-all",
 				value === itemType
 					? "border-primary bg-primary/5 text-primary ring-primary/30 ring-1"
 					: "text-muted-foreground hover:border-foreground/20 hover:text-foreground"

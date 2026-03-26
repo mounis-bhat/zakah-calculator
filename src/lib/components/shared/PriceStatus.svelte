@@ -42,19 +42,26 @@
 		</Alert.Description>
 	</Alert.Root>
 {:else if goldPrice !== null || silverPrice !== null}
-	<div class="flex items-center gap-2 py-3 text-base text-muted-foreground">
-		<CheckCircle size={16} class="text-success" />
-		<span>
-			Live prices loaded:
-			{#if goldPrice !== null}
-				Gold {formatCurrency(goldPrice, currency)}/g
-			{/if}
-			{#if goldPrice !== null && silverPrice !== null}
-				&middot;
-			{/if}
-			{#if silverPrice !== null}
-				Silver {formatCurrency(silverPrice, currency)}/g
-			{/if}
-		</span>
+	<div class="space-y-1 py-3">
+		<div class="flex items-center gap-2 text-base text-muted-foreground">
+			<CheckCircle size={16} class="text-success" />
+			<span>
+				Live prices loaded:
+				{#if goldPrice !== null}
+					Gold {formatCurrency(goldPrice, currency)}/g
+				{/if}
+				{#if goldPrice !== null && silverPrice !== null}
+					&middot;
+				{/if}
+				{#if silverPrice !== null}
+					Silver {formatCurrency(silverPrice, currency)}/g
+				{/if}
+			</span>
+		</div>
+		{#if currency !== "USD"}
+			<p class="text-muted-foreground/70 pl-6 text-sm">
+				Spot prices are sourced from US markets. Local rates in your country may differ due to import duties, taxes, and regional premiums. Enter your local rate below for better accuracy.
+			</p>
+		{/if}
 	</div>
 {/if}

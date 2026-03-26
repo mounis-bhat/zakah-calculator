@@ -77,7 +77,7 @@
 	<nav
 		class="border-border/50 sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md"
 	>
-		<div class="mx-auto max-w-5xl px-4 lg:px-8">
+		<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-12 xl:px-16">
 			<div class="flex items-center py-3 lg:py-4">
 				<a
 					href="/"
@@ -87,12 +87,13 @@
 				</a>
 			</div>
 			<div class="no-scrollbar -mb-px flex gap-1 overflow-x-auto pb-3">
-				{#each routes as route}
+				{#each routes as route, i}
 					{@const isActive = route.path === $page.url.pathname}
 					<a
 						href={route.path}
+						style="--stagger-index: {i}"
 						class={cn(
-							"whitespace-nowrap rounded-full px-4 py-2 text-base font-medium transition-colors",
+							"animate-stagger-in whitespace-nowrap rounded-full px-4 py-2 text-base font-medium transition-colors",
 							isActive
 								? "bg-primary/15 text-primary"
 								: "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -107,7 +108,7 @@
 
 	<!-- Content -->
 	<main class="flex-1 pb-20 lg:pb-0">
-		<div class="mx-auto max-w-5xl px-4 py-8 lg:px-8 lg:py-10">
+		<div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-12 lg:py-12 xl:px-16">
 			{#if mounted}
 				{@render children()}
 			{/if}
@@ -120,7 +121,7 @@
 			class="border-border/50 bg-background/90 fixed bottom-0 left-0 right-0 border-t backdrop-blur-md print:hidden lg:static lg:border-0 lg:bg-transparent lg:backdrop-blur-none"
 		>
 			<div
-				class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 lg:px-8 lg:pb-10"
+				class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 lg:px-12 lg:pb-10 xl:px-16"
 			>
 				{#if prevRoute}
 					<Button

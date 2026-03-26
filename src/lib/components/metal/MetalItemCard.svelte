@@ -35,7 +35,7 @@
 	);
 </script>
 
-<div class="bg-card border-border flex items-center gap-3 rounded-lg border p-3 shadow-sm">
+<div class="bg-card border-border flex items-center gap-3 rounded-lg border p-3 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md">
 	<div class="text-primary/50">
 		<Icon size={20} />
 	</div>

@@ -40,11 +40,12 @@
 
 <div class="space-y-2">
 	<div class="flex flex-wrap gap-1.5">
-		{#each options as option}
+		{#each options as option, i}
 			<button
 				type="button"
+				style="--stagger-index: {i}"
 				class={cn(
-					"rounded-md border px-3 py-1.5 text-sm font-medium transition-all",
+					"animate-scale-in rounded-md border px-3 py-1.5 text-sm font-medium transition-all",
 					value === option.value && !showCustom
 						? "border-primary bg-primary text-primary-foreground"
 						: "border-border text-muted-foreground hover:border-foreground/20 hover:text-foreground"

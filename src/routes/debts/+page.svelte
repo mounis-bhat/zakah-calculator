@@ -38,7 +38,7 @@
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6 lg:space-y-8">
-	<div class="space-y-2">
+	<div class="animate-stagger-in space-y-2" style="--stagger-index: 0">
 		<h1 class="font-display text-xl font-semibold lg:text-2xl">
 			Debts & Deductions
 		</h1>
@@ -52,7 +52,7 @@
 		class="space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
 	>
 		<!-- Immediate debts -->
-		<div class="space-y-3">
+		<div class="animate-stagger-in space-y-3" style="--stagger-index: 1">
 			<div class="flex items-center gap-1.5">
 				<Label class="text-base font-medium">Immediate debts</Label>
 				<InfoTooltip
@@ -119,7 +119,7 @@
 		</div>
 
 		<!-- Installment debts -->
-		<div class="space-y-3">
+		<div class="animate-stagger-in space-y-3" style="--stagger-index: 2">
 			<div class="flex items-center gap-1.5">
 				<Label class="text-base font-medium"
 					>Installment deductions</Label
@@ -200,7 +200,8 @@
 
 	{#if totals.total > 0}
 		<div
-			class="bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			class="animate-stagger-in bg-card border-border mx-auto max-w-sm rounded-lg border p-4 text-center shadow-sm"
+			style="--stagger-index: 3"
 			transition:fade={{ duration: 200 }}
 		>
 			<p class="text-muted-foreground text-sm uppercase tracking-wide">
