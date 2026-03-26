@@ -78,8 +78,14 @@ export function computeTotalDebts(debts: DebtEntry[]): {
 }
 
 export function computeZakahSummary(state: ZakahState): ZakahSummary {
-  const effectiveGoldPrice = state.manualGoldPrice ?? state.spotPriceGold24KPerGram;
-  const effectiveSilverPrice = state.manualSilverPrice ?? state.spotPriceSilverPerGram;
+  const effectiveGoldPrice =
+    state.priceSourcePreference === "local" && state.manualGoldPrice !== null
+      ? state.manualGoldPrice
+      : state.spotPriceGold24KPerGram;
+  const effectiveSilverPrice =
+    state.priceSourcePreference === "local" && state.manualSilverPrice !== null
+      ? state.manualSilverPrice
+      : state.spotPriceSilverPerGram;
 
   const totalCash = state.cash.onHand + state.cash.inBank;
   const totalGoldValue = computeTotalMetalValue(state.metalItems, "gold", effectiveGoldPrice);

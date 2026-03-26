@@ -6,6 +6,7 @@ const STORAGE_KEY = "zakah_calculator_state";
 function createDefaultState(): ZakahState {
   return {
     currency: "USD",
+    priceSourcePreference: "live",
     spotPriceGold24KPerGram: null,
     spotPriceSilverPerGram: null,
     manualGoldPrice: null,
@@ -23,6 +24,7 @@ class ZakahStore {
 
   // Setup
   currency = $state("USD");
+  priceSourcePreference = $state<"live" | "local">("live");
   spotPriceGold24KPerGram = $state<number | null>(null);
   spotPriceSilverPerGram = $state<number | null>(null);
   manualGoldPrice = $state<number | null>(null);
@@ -40,8 +42,16 @@ class ZakahStore {
   nisabMethod = $state<"silver" | "gold">("silver");
 
   // Derived values
-  effectiveGoldPrice = $derived(this.manualGoldPrice ?? this.spotPriceGold24KPerGram);
-  effectiveSilverPrice = $derived(this.manualSilverPrice ?? this.spotPriceSilverPerGram);
+  effectiveGoldPrice = $derived(
+    this.priceSourcePreference === "local" && this.manualGoldPrice !== null
+      ? this.manualGoldPrice
+      : this.spotPriceGold24KPerGram,
+  );
+  effectiveSilverPrice = $derived(
+    this.priceSourcePreference === "local" && this.manualSilverPrice !== null
+      ? this.manualSilverPrice
+      : this.spotPriceSilverPerGram,
+  );
   summary: ZakahSummary = $derived(computeZakahSummary(this.toState()));
 
   // Metal item methods
@@ -76,6 +86,7 @@ class ZakahStore {
   toState(): ZakahState {
     return {
       currency: this.currency,
+      priceSourcePreference: this.priceSourcePreference,
       spotPriceGold24KPerGram: this.spotPriceGold24KPerGram,
       spotPriceSilverPerGram: this.spotPriceSilverPerGram,
       manualGoldPrice: this.manualGoldPrice,
@@ -108,6 +119,7 @@ class ZakahStore {
       if (!s) return false;
 
       this.currency = s.currency ?? "USD";
+      this.priceSourcePreference = s.priceSourcePreference ?? "live";
       this.spotPriceGold24KPerGram = s.spotPriceGold24KPerGram ?? null;
       this.spotPriceSilverPerGram = s.spotPriceSilverPerGram ?? null;
       this.manualGoldPrice = s.manualGoldPrice ?? null;
@@ -127,6 +139,7 @@ class ZakahStore {
   reset(): void {
     const defaults = createDefaultState();
     this.currency = defaults.currency;
+    this.priceSourcePreference = defaults.priceSourcePreference;
     this.spotPriceGold24KPerGram = defaults.spotPriceGold24KPerGram;
     this.spotPriceSilverPerGram = defaults.spotPriceSilverPerGram;
     this.manualGoldPrice = defaults.manualGoldPrice;

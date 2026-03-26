@@ -203,6 +203,26 @@
   }
 }
 
+@keyframes soft-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes status-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 oklch(0.76 0.11 74 / 0%);
+  }
+  50% {
+    box-shadow: 0 0 18px oklch(0.76 0.11 74 / 30%);
+  }
+}
+
 @utility animate-stagger-in {
   animation: stagger-fade-in 400ms ease-out both;
   animation-delay: calc(var(--stagger-index, 0) * 60ms);
@@ -215,6 +235,14 @@
 
 @utility animate-shimmer {
   animation: shimmer 3s ease-in-out infinite;
+}
+
+@utility animate-soft-float {
+  animation: soft-float 3.4s ease-in-out infinite;
+}
+
+@utility animate-status-glow {
+  animation: status-glow 2.8s ease-in-out infinite;
 }
 
 @utility nav-progress-track {

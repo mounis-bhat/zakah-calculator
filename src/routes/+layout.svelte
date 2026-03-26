@@ -7,18 +7,66 @@
 	import { zakahStore } from "@/state/zakah-state.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import * as Sheet from "$lib/components/ui/sheet";
-	import { cn } from "$lib/utils.js";
-	import { ArrowLeft, ArrowRight, Calculator } from "phosphor-svelte";
+	import { cn, formatCurrency } from "$lib/utils.js";
+	import type { Component } from "svelte";
+	import {
+		ArrowLeft,
+		ArrowRight,
+		Calculator,
+		CheckCircle,
+		Coins,
+		Receipt,
+		SlidersHorizontal,
+		Sparkle,
+		Wallet,
+	} from "phosphor-svelte";
 
 	let { children } = $props();
 
-	const routes = [
-		{ path: "/", label: "Setup", description: "Preferences and live prices" },
-		{ path: "/cash", label: "Cash", description: "Wallets and bank balances" },
-		{ path: "/gold", label: "Gold", description: "Jewelry and bullion items" },
-		{ path: "/silver", label: "Silver", description: "Silver holdings by weight" },
-		{ path: "/debts", label: "Debts", description: "Short-term liabilities" },
-		{ path: "/results", label: "Results", description: "Final nisab and zakah due" },
+	type RouteMeta = {
+		path: string;
+		label: string;
+		description: string;
+		icon: Component;
+	};
+
+	const routes: RouteMeta[] = [
+		{
+			path: "/",
+			label: "Setup",
+			description: "Preferences and live prices",
+			icon: SlidersHorizontal,
+		},
+		{
+			path: "/cash",
+			label: "Cash",
+			description: "Wallets and bank balances",
+			icon: Wallet,
+		},
+		{
+			path: "/gold",
+			label: "Gold",
+			description: "Jewelry and bullion items",
+			icon: Sparkle,
+		},
+		{
+			path: "/silver",
+			label: "Silver",
+			description: "Silver holdings by weight",
+			icon: Coins,
+		},
+		{
+			path: "/debts",
+			label: "Debts",
+			description: "Short-term liabilities",
+			icon: Receipt,
+		},
+		{
+			path: "/results",
+			label: "Results",
+			description: "Final nisab and zakah due",
+			icon: Calculator,
+		},
 	];
 
 	const currentIndex = $derived(
@@ -38,13 +86,48 @@
 	const progressValue = $derived(
 		currentIndex >= 0 ? (stepNumber / routes.length) * 100 : 0,
 	);
+	const cashEntered = $derived(zakahStore.cash.onHand + zakahStore.cash.inBank);
+	const goldItemCount = $derived(
+		zakahStore.metalItems.filter((item) => item.metal === "gold").length,
+	);
+	const silverItemCount = $derived(
+		zakahStore.metalItems.filter((item) => item.metal === "silver").length,
+	);
+	const debtCount = $derived(zakahStore.debts.length);
+	const dataSectionsCount = $derived(
+		[
+			zakahStore.effectiveGoldPrice !== null && zakahStore.effectiveSilverPrice !== null,
+			cashEntered > 0,
+			goldItemCount > 0,
+			silverItemCount > 0,
+			debtCount > 0,
+		].filter(Boolean).length,
+	);
+	const pricingModeLabel = $derived(
+		(zakahStore.manualGoldPrice !== null &&
+			zakahStore.effectiveGoldPrice === zakahStore.manualGoldPrice) ||
+			(zakahStore.manualSilverPrice !== null &&
+				zakahStore.effectiveSilverPrice === zakahStore.manualSilverPrice)
+			? "Local manual"
+			: "Live USD spot",
+	);
 
 	let mounted = $state(false);
 	let menuOpen = $state(false);
+	let saveState = $state<"idle" | "saving" | "saved" | "error">("idle");
+	let savedAt = $state<Date | null>(null);
+	const autosaveLabel = $derived.by(() => {
+		if (saveState === "saving") return "Saving changes";
+		if (saveState === "error") return "Save failed";
+		if (!savedAt) return "Local autosave ready";
+		return "Saved locally";
+	});
 
 	onMount(() => {
 		zakahStore.loadFromStorage();
 		mounted = true;
+		saveState = zakahStore.hasSavedState ? "saved" : "idle";
+		savedAt = zakahStore.hasSavedState ? new Date() : null;
 	});
 
 	// Debounced persistence
@@ -53,8 +136,15 @@
 		if (!mounted) return;
 		zakahStore.toState();
 		clearTimeout(persistTimeout);
+		saveState = "saving";
 		persistTimeout = setTimeout(() => {
-			zakahStore.persist();
+			try {
+				zakahStore.persist();
+				saveState = "saved";
+				savedAt = new Date();
+			} catch {
+				saveState = "error";
+			}
 		}, 500);
 	});
 
@@ -86,18 +176,36 @@
 	>
 		<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-12 xl:px-16">
 			<div class="flex items-center justify-between gap-4 py-3 lg:py-5">
-				<a
-					href="/"
-					class="font-display text-lg font-semibold tracking-tight lg:text-2xl"
-				>
-					Zakah Calculator
-				</a>
+				<div class="flex min-w-0 items-center gap-3">
+					<a
+						href="/"
+						class="font-display text-lg font-semibold tracking-tight lg:text-2xl"
+					>
+						Zakah Calculator
+					</a>
+					<div class="hidden rounded-full border border-border/60 bg-card/75 px-3 py-1.5 text-xs text-muted-foreground lg:flex lg:items-center lg:gap-2 lg:transition-transform lg:hover:-translate-y-0.5">
+						<span
+							class={cn(
+								"size-2 rounded-full",
+								saveState === "saving"
+									? "bg-primary animate-pulse animate-status-glow"
+									: saveState === "error"
+										? "bg-destructive"
+										: "bg-success animate-status-glow",
+							)}
+						></span>
+						{autosaveLabel}
+					</div>
+				</div>
 
 				<div class="flex items-center gap-3 lg:hidden">
 					<div class="min-w-0 text-right">
 						<p class="truncate text-sm font-semibold">{currentRoute.label}</p>
 						<p class="text-muted-foreground text-xs">
 							Step {stepNumber} of {routes.length}
+						</p>
+						<p class="text-muted-foreground/80 mt-0.5 text-[11px]">
+							{autosaveLabel}
 						</p>
 					</div>
 					<Button
@@ -132,6 +240,7 @@
 				{#each routes as route, i}
 					{@const isActive = route.path === $page.url.pathname}
 					{@const isComplete = i < currentIndex}
+					{@const Icon = route.icon}
 					<a
 						href={route.path}
 						style="--stagger-index: {i}"
@@ -155,7 +264,11 @@
 											: "border-border/60 bg-muted/50 text-muted-foreground group-hover:text-foreground",
 								)}
 							>
-								{i + 1}
+								{#if isComplete}
+									<CheckCircle size={18} weight="fill" />
+								{:else}
+									<Icon size={18} />
+								{/if}
 							</div>
 							<div class="min-w-0 space-y-1">
 								<p
@@ -176,6 +289,58 @@
 			</div>
 		</div>
 	</nav>
+
+	<div class="print:hidden">
+		<div class="mx-auto max-w-5xl px-4 pt-4 sm:px-6 lg:px-12 xl:px-16">
+			<section class="animate-scale-in animate-soft-float overflow-hidden rounded-[1.75rem] border border-border/60 bg-gradient-to-br from-card via-card/95 to-background/80 shadow-xl shadow-black/10" style="--stagger-index: 0">
+				<div class="grid gap-4 p-4 lg:grid-cols-[1.3fr_1fr] lg:p-5">
+					<div class="space-y-4">
+						<div class="flex items-center justify-between gap-3">
+							<div>
+								<p class="text-muted-foreground text-xs uppercase tracking-[0.24em]">
+									Progress overview
+								</p>
+								<h2 class="font-display text-lg font-semibold lg:text-xl">
+									{currentRoute.label}
+								</h2>
+							</div>
+							<div class="rounded-full border border-border/60 bg-background/60 px-3 py-1 text-sm font-medium">
+								{stepNumber}/{routes.length}
+							</div>
+						</div>
+						<p class="text-muted-foreground max-w-xl text-sm leading-relaxed">
+							{currentRoute.description}. Sections with data: {dataSectionsCount} of 5.
+						</p>
+						<div class="nav-progress-track overflow-hidden">
+							<div class="pointer-events-none absolute inset-y-0 left-0 w-20 animate-shimmer bg-gradient-to-r from-transparent via-white/12 to-transparent bg-[length:200%_100%]"></div>
+							<div class="nav-progress-fill" style={`width: ${progressValue}%`}></div>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-3">
+						<div class="rounded-2xl border border-border/60 bg-background/55 p-3">
+							<p class="text-muted-foreground text-[11px] uppercase tracking-[0.2em]">Cash entered</p>
+							<p class="mt-2 text-base font-semibold">{formatCurrency(cashEntered, zakahStore.currency)}</p>
+						</div>
+						<div class="rounded-2xl border border-border/60 bg-background/55 p-3">
+							<p class="text-muted-foreground text-[11px] uppercase tracking-[0.2em]">Net wealth</p>
+							<p class="mt-2 text-base font-semibold">{formatCurrency(zakahStore.summary.netWealth, zakahStore.currency)}</p>
+						</div>
+						<div class="rounded-2xl border border-border/60 bg-background/55 p-3">
+							<p class="text-muted-foreground text-[11px] uppercase tracking-[0.2em]">Metals logged</p>
+							<p class="mt-2 text-base font-semibold">{goldItemCount + silverItemCount} items</p>
+							<p class="text-muted-foreground mt-1 text-xs">{goldItemCount} gold, {silverItemCount} silver</p>
+						</div>
+						<div class="rounded-2xl border border-border/60 bg-background/55 p-3">
+							<p class="text-muted-foreground text-[11px] uppercase tracking-[0.2em]">Pricing mode</p>
+							<p class="mt-2 text-base font-semibold">{pricingModeLabel}</p>
+							<p class="text-muted-foreground mt-1 text-xs">{debtCount} debt entries recorded</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
 
 	<Sheet.Root bind:open={menuOpen}>
 		<Sheet.Content
@@ -211,6 +376,7 @@
 						{#each routes as route, i}
 							{@const isActive = route.path === $page.url.pathname}
 							{@const isComplete = i < currentIndex}
+							{@const Icon = route.icon}
 							<a
 								href={route.path}
 								onclick={() => (menuOpen = false)}
@@ -234,7 +400,11 @@
 													: "border-border/60 bg-muted/50 text-muted-foreground",
 										)}
 									>
-										{i + 1}
+										{#if isComplete}
+											<CheckCircle size={18} weight="fill" />
+										{:else}
+											<Icon size={18} />
+										{/if}
 									</div>
 									<div class="min-w-0 flex-1">
 										<div class="flex items-center justify-between gap-3">

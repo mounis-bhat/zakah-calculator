@@ -21,7 +21,7 @@
 	import CurrencyInput from "@/components/shared/CurrencyInput.svelte";
 	import InfoTooltip from "@/components/shared/InfoTooltip.svelte";
 	import PriceStatus from "@/components/shared/PriceStatus.svelte";
-	import { Info } from "phosphor-svelte";
+	import { CheckCircle, Info } from "phosphor-svelte";
 
 	let loading = $state(false);
 	let error = $state<string | null>(null);
@@ -32,6 +32,10 @@
 	const selectedCurrency = $derived(
 		currencies.find((c) => c.code === zakahStore.currency),
 	);
+	const isUsingLocalRates = $derived(
+		zakahStore.priceSourcePreference === "local",
+	);
+	const hasBothManualRates = $derived(manualGold > 0 && manualSilver > 0);
 
 	$effect(() => {
 		zakahStore.manualGoldPrice = manualGold || null;
@@ -68,6 +72,10 @@
 		if (!value) return;
 		zakahStore.currency = value;
 		fetchPrices();
+	}
+
+	function setPriceSourcePreference(preference: "live" | "local") {
+		zakahStore.priceSourcePreference = preference;
 	}
 
 	onMount(() => {
@@ -210,8 +218,85 @@
 		</div>
 	</div>
 
+	<div class="animate-stagger-in space-y-3" style="--stagger-index: 3">
+		<div class="flex items-center gap-1.5">
+			<Label>Price source</Label>
+			<InfoTooltip
+				text="Choose whether the calculator should rely on the live USD spot reference or on your own local market rates."
+			/>
+		</div>
+		<div class="grid gap-3 lg:grid-cols-2">
+			<button
+				type="button"
+				onclick={() => setPriceSourcePreference("live")}
+				class={[
+					"rounded-2xl border px-4 py-4 text-left transition-all",
+					isUsingLocalRates
+						? "border-border/60 bg-card/70 hover:border-border"
+						: "border-primary/40 bg-primary/10 shadow-lg shadow-primary/8",
+				]}
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p class="text-sm font-semibold">Use live USD spot reference</p>
+						<p class="text-muted-foreground mt-1 text-sm leading-relaxed">
+							Best if you want a quick market-based estimate using US spot data
+							converted into {zakahStore.currency}.
+						</p>
+					</div>
+					{#if !isUsingLocalRates}
+						<CheckCircle size={18} class="text-primary shrink-0" />
+					{/if}
+				</div>
+			</button>
+
+			<button
+				type="button"
+				onclick={() => setPriceSourcePreference("local")}
+				class={[
+					"rounded-2xl border px-4 py-4 text-left transition-all",
+					isUsingLocalRates
+						? "border-primary/40 bg-primary/10 shadow-lg shadow-primary/8"
+						: "border-border/60 bg-card/70 hover:border-border",
+				]}
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p class="text-sm font-semibold">Use my local market rates</p>
+						<p class="text-muted-foreground mt-1 text-sm leading-relaxed">
+							Best if you know the actual gold and silver rate from your local
+							dealer, jeweler, or market.
+						</p>
+					</div>
+					{#if isUsingLocalRates}
+						<CheckCircle size={18} class="text-primary shrink-0" />
+					{/if}
+				</div>
+			</button>
+		</div>
+
+		{#if isUsingLocalRates}
+			<Alert.Root class="border-primary/20 bg-primary/6 rounded-2xl">
+				<Info size={18} class="text-primary" />
+				<Alert.Title>Local rate mode is active</Alert.Title>
+				<Alert.Description class="space-y-1 text-sm leading-relaxed">
+					<p>
+						The calculator will prefer your manual gold and silver prices when
+						available.
+					</p>
+					{#if !hasBothManualRates}
+						<p>
+							Add both manual prices below for the most accurate local-market
+							calculation.
+						</p>
+					{/if}
+				</Alert.Description>
+			</Alert.Root>
+		{/if}
+	</div>
+
 	<!-- Price status -->
-	<div class="animate-stagger-in" style="--stagger-index: 3">
+	<div class="animate-stagger-in" style="--stagger-index: 4">
 		<PriceStatus
 			{loading}
 			{error}
@@ -223,14 +308,21 @@
 	</div>
 
 	<!-- Manual overrides -->
-	<div class="animate-stagger-in space-y-3" style="--stagger-index: 4">
+	<div class="animate-stagger-in space-y-3" style="--stagger-index: 5">
 		<div class="flex items-center gap-1.5">
-			<Label>Manual price override</Label>
+			<Label>{isUsingLocalRates ? "Local market rates" : "Manual price override"}</Label>
 			<InfoTooltip
 				text="Know your local gold/silver rate? Enter it here for better accuracy. These override the live API prices."
 			/>
 		</div>
-		<div class="grid grid-cols-2 gap-3">
+		<div
+			class={[
+				"grid grid-cols-2 gap-3 rounded-2xl border p-3 sm:p-4",
+				isUsingLocalRates
+					? "border-primary/30 bg-primary/6"
+					: "border-border/60 bg-card/60",
+			]}
+		>
 			<CurrencyInput
 				bind:value={manualGold}
 				currency={zakahStore.currency}
@@ -244,6 +336,13 @@
 				placeholder="e.g. 3.50"
 			/>
 		</div>
+		<p class="text-muted-foreground text-sm leading-relaxed">
+			{#if isUsingLocalRates}
+				These values are currently being used for calculation whenever they are available.
+			{:else}
+				These values stay optional until you switch the price source to local market rates.
+			{/if}
+		</p>
 	</div>
 </div>
 

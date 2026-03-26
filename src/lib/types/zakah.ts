@@ -22,6 +22,7 @@ export interface DebtEntry {
 
 export interface ZakahState {
   currency: string;
+  priceSourcePreference: "live" | "local";
   spotPriceGold24KPerGram: number | null;
   spotPriceSilverPerGram: number | null;
   manualGoldPrice: number | null;

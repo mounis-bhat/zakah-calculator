@@ -46,6 +46,7 @@ function makeSilverItem(overrides: Partial<MetalItem> = {}): MetalItem {
 function makeDefaultState(overrides: Partial<ZakahState> = {}): ZakahState {
   return {
     currency: "USD",
+    priceSourcePreference: "live",
     spotPriceGold24KPerGram: null,
     spotPriceSilverPerGram: null,
     manualGoldPrice: null,
@@ -265,8 +266,9 @@ describe("computeZakahSummary", () => {
     expect(summary.totalAssets).toBeCloseTo(1000);
   });
 
-  test("manual prices override spot prices", () => {
+  test("manual prices override spot prices in local mode", () => {
     const state = makeDefaultState({
+      priceSourcePreference: "local",
       spotPriceGold24KPerGram: 50,
       manualGoldPrice: 100,
       manualSilverPrice: 1,
@@ -275,6 +277,22 @@ describe("computeZakahSummary", () => {
     const summary = computeZakahSummary(state);
     // Uses manual price (100), not spot (50)
     expect(summary.totalGoldValue).toBeCloseTo(1000);
+  });
+
+  test("live mode keeps using fetched spot prices", () => {
+    const state = makeDefaultState({
+      priceSourcePreference: "live",
+      spotPriceGold24KPerGram: 50,
+      manualGoldPrice: 100,
+      spotPriceSilverPerGram: 1,
+      manualSilverPrice: 3,
+      metalItems: [makeGoldItem({ karat: 24, grossWeight: 10, quantity: 1 })],
+    });
+
+    const summary = computeZakahSummary(state);
+
+    expect(summary.totalGoldValue).toBeCloseTo(500);
+    expect(summary.nisabThreshold).toBeCloseTo(595);
   });
 
   test("null nisab threshold when no prices", () => {

@@ -21,6 +21,14 @@
 
 	const s = $derived(zakahStore.summary);
 	const currency = $derived(zakahStore.currency);
+	const pricingModeLabel = $derived(
+		(zakahStore.manualGoldPrice !== null &&
+			zakahStore.effectiveGoldPrice === zakahStore.manualGoldPrice) ||
+			(zakahStore.manualSilverPrice !== null &&
+				zakahStore.effectiveSilverPrice === zakahStore.manualSilverPrice)
+			? "Local manual rates"
+			: "Live USD spot rates",
+	);
 	function fmt(n: number) {
 		return formatCurrency(n, currency);
 	}
@@ -103,6 +111,38 @@
 			<div class="animate-shimmer mx-auto mt-3 h-0.5 w-16 rounded-full bg-gradient-to-r from-transparent via-gold to-transparent bg-[length:200%_100%]"></div>
 		</div>
 	{/if}
+
+	<div class="animate-stagger-in grid gap-3 sm:grid-cols-2" style="--stagger-index: 2">
+		<div class="rounded-2xl border border-border/60 bg-card/70 p-4">
+			<p class="text-muted-foreground text-[11px] uppercase tracking-[0.22em]">
+				Pricing mode
+			</p>
+			<p class="mt-2 text-base font-semibold">{pricingModeLabel}</p>
+			<p class="text-muted-foreground mt-1 text-sm leading-relaxed">
+				{#if pricingModeLabel === "Local manual rates"}
+					Results are using the manual gold and silver rates you entered in Setup.
+				{:else}
+					Results are using live USD spot prices converted into {currency}.
+				{/if}
+			</p>
+		</div>
+
+		<div class="rounded-2xl border border-border/60 bg-card/70 p-4">
+			<p class="text-muted-foreground text-[11px] uppercase tracking-[0.22em]">
+				Nisab basis
+			</p>
+			<p class="mt-2 text-base font-semibold capitalize">
+				{zakahStore.nisabMethod} threshold
+			</p>
+			<p class="text-muted-foreground mt-1 text-sm leading-relaxed">
+				{#if s.nisabThreshold !== null}
+					Current threshold: {fmt(s.nisabThreshold)}
+				{:else}
+					Set a valid price source in Setup to calculate the threshold.
+				{/if}
+			</p>
+		</div>
+	</div>
 
 	<!-- Asset Summary Table -->
 	<div class="animate-stagger-in space-y-2" style="--stagger-index: 3">
