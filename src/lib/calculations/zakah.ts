@@ -27,13 +27,18 @@ export function computeItemValue(item: MetalItem, spotPricePerGram: number | nul
   if (item.useLocalPrice && item.localPricePerUnit !== null) {
     return item.localPricePerUnit * item.quantity;
   }
+  // Always recalculate from pure weight when a current price is available
+  // so that currency changes and price updates are reflected immediately.
+  // Fall back to the stored estimate only when no live price exists.
+  if (spotPricePerGram !== null) {
+    const maxPurity = item.metal === "gold" ? GOLD_MAX_PURITY : SILVER_MAX_PURITY;
+    const pure = computePureWeight(item.grossWeight, item.stoneDeduction, item.karat, maxPurity);
+    return pure * spotPricePerGram * item.quantity;
+  }
   if (item.estimatedPricePerUnit !== null) {
     return item.estimatedPricePerUnit * item.quantity;
   }
-  if (spotPricePerGram === null) return 0;
-  const maxPurity = item.metal === "gold" ? GOLD_MAX_PURITY : SILVER_MAX_PURITY;
-  const pure = computePureWeight(item.grossWeight, item.stoneDeduction, item.karat, maxPurity);
-  return pure * spotPricePerGram * item.quantity;
+  return 0;
 }
 
 export function computeTotalMetalValue(
